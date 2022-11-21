@@ -1,3 +1,5 @@
+import { useState } from "react"
+import { InputBar } from "../components/InputBar"
 import { Slot, Section } from "../components/Section"
 import { Separator } from "../components/Separator"
 import { ActionStatus, EventBullet, Person, Question, Task } from "../types/Bullet"
@@ -16,10 +18,14 @@ const bullets: Array<Task> = [
 ]
 
 export const HomePage = () => {
+    const [bulletsRaw, setBulletsRaw] = useState<string[]>([]);
+    
     return <div>
         30 D.F.
         <Section title='Schedule' items={bulletSlots}/>
         <Section title='TODO' items={bullets}/>
         <Separator title='Completed'/>
+        <Section title='Backlog' items={bulletsRaw}/>
+        <InputBar onSave={(bulletLine) => setBulletsRaw([...bulletsRaw, bulletLine])}/>
     </div>
 }
