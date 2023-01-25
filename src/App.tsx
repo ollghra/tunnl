@@ -1,4 +1,3 @@
-import { HomePage } from "./pages/HomePage";
 import WFWPage from "./pages/WFWPage";
 // // import { google, GoogleApis } from "googleapis";
 // import { gapi, loadGapiInsideDOM, loadAuth2 } from 'gapi-script';
@@ -61,7 +60,6 @@ export const App = () => {
     // },[])
 
     return <div className="App">
-        {/* <HomePage /> */}
         <header>
             {/* <button onClick={handleAuth} disabled={!gapiInit || !gisInit}>Authorise</button> */}
             {/* <button onClick={handleSignOut}>Sign Out</button> */}
