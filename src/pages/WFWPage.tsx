@@ -5,9 +5,9 @@ import { TodoLI } from '../components/TodoLI';
 import { Todo, Todos } from '../types/Todo';
 import { Separator } from '../components/Separator';
 
-const EMPTY_DATE: number = new Date('1970-01-01T00:00:00Z').getTime();
+export const EMPTY_DATE: number = new Date('1970-01-01T00:00:00Z').getTime();
 
-const WFWPage: React.FC = () => {
+export const WFWPage: React.FC = () => {
     const [todos, setTodos] = useState<Record<string, Todo>>({});
 
     useEffect(() => {
@@ -22,10 +22,6 @@ const WFWPage: React.FC = () => {
             setTodos(_todos);
         }
     }, []);
-
-    useEffect(() => {
-        console.debug(`todos changed to : ${JSON.stringify(todos)}`);
-    }, [todos]);
 
     const createTodo = (text: string, time: Date, _id?: string | ObjectId, done?: boolean): Todo => {
         return {
@@ -62,9 +58,18 @@ const WFWPage: React.FC = () => {
 
     return (
         <div>
-            <h1>Todo List</h1>
+            <h1>Impossible is a dare</h1>
+            <h3>WhatForWhen</h3>
             <TodoBar onAddTodo={addTodo} />
-            {/* <button onClick={removeAllTodos}>Delete all todos</button> */}
+            <Separator title='upcoming' />
+            <ul>
+                {Object.values(todos).filter((todo) => !todo.done && todo.time.getTime() !== EMPTY_DATE && todo.time >= new Date())
+                .sort((a, b) => a.time.getTime() - b.time.getTime()).map((todo, index) =>
+                    <TodoLI key={index} onDone={(done) => updateTodo(todo.id, { ...todo, done })}
+                        onDelete={() => removeTodo(todo.id)}
+                        todo={todo} />
+                )}
+            </ul>
             <Separator title='late' />
             <ul>
                 {Object.values(todos).filter((todo) => !todo.done && todo.time.getTime() !== EMPTY_DATE && todo.time <= new Date()).map((todo, index) =>
@@ -73,18 +78,10 @@ const WFWPage: React.FC = () => {
                     todo={todo} />
                 )}
             </ul>
-            <Separator title='upcoming' />
-            <ul>
-                {Object.values(todos).filter((todo) => !todo.done && todo.time.getTime() !== EMPTY_DATE && todo.time >= new Date()).map((todo, index) =>
-                    <TodoLI key={index} onDone={(done) => updateTodo(todo.id, { ...todo, done })}
-                        onDelete={() => removeTodo(todo.id)}
-                        todo={todo} />
-                )}
-            </ul>
             <Separator title='backlog' />
             <ul>
                 {Object.values(todos).filter((todo) => !todo.done && todo.time.getTime() === EMPTY_DATE).map((todo, index) =>
-                    <TodoLI key={index}
+                    <TodoLI key={todo.id.toString()}
                         onDone={(done) => updateTodo(todo.id, { ...todo, done })}
                         onDelete={() => removeTodo(todo.id)}
                         todo={todo} />
@@ -101,5 +98,3 @@ const WFWPage: React.FC = () => {
         </div>
     );
 }
-
-export default WFWPage;

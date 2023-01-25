@@ -1,4 +1,4 @@
-import WFWPage from "./pages/WFWPage";
+import { WFWPage } from "./pages/WFWPage";
 // // import { google, GoogleApis } from "googleapis";
 // import { gapi, loadGapiInsideDOM, loadAuth2 } from 'gapi-script';
 // import { useEffect, useState } from "react";
