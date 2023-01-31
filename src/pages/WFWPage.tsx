@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ObjectId } from 'bson';
 import { TodoBar } from '../components/TodoBar';
 import { TodoLI } from '../components/TodoLI';
-import { Todo, Todos } from '../types/Todo';
+import { createTodo, Todo, Todos } from '../types/Todo';
 import { Separator } from '../components/Separator';
 
 export const EMPTY_DATE: number = new Date('1970-01-01T00:00:00Z').getTime();
@@ -15,22 +15,18 @@ export const WFWPage: React.FC = () => {
         if (storedTodos) {
             let _todos: Todos = JSON.parse(storedTodos);
             _todos = Object.entries(_todos).reduce<Todos>((retTodos, curTodo) => {
-                retTodos[curTodo[0]] = { ...curTodo[1], id: new ObjectId(curTodo[1].id),
-                    time: new Date(curTodo[1].time) }
+                retTodos[curTodo[0]] = {
+                    ...curTodo[1],
+                    id: new ObjectId(curTodo[1].id),
+                    time: new Date(curTodo[1].time),
+                    created: new Date(curTodo[1].created)//.getTime() === EMPTY_DATE ? new Date() : new Date(curTodo[1].created)
+                }
                 return retTodos;
             }, {})
             setTodos(_todos);
         }
     }, []);
 
-    const createTodo = (text: string, time: Date, _id?: string | ObjectId, done?: boolean): Todo => {
-        return {
-            id: _id instanceof ObjectId ? _id : new ObjectId(_id),
-            text: text,
-            time: time,
-            done: done || false
-        }
-    }
     const addTodo = (text: string, time: Date) => {
         const _todos: Todos = { ...todos };
         const _todo: Todo = createTodo(text, time);
@@ -80,7 +76,8 @@ export const WFWPage: React.FC = () => {
             </ul>
             <Separator title='backlog' />
             <ul>
-                {Object.values(todos).filter((todo) => !todo.done && todo.time.getTime() === EMPTY_DATE).map((todo, index) =>
+                {Object.values(todos).filter((todo) => !todo.done && todo.time.getTime() === EMPTY_DATE)
+                .sort((a, b) => b.created.getTime() - a.created.getTime()).map((todo, index) =>
                     <TodoLI key={todo.id.toString()}
                         onDone={(done) => updateTodo(todo.id, { ...todo, done })}
                         onDelete={() => removeTodo(todo.id)}
